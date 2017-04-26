@@ -67,15 +67,12 @@ http.createServer((request, response) => {
 
 ### Middleware
 Redshirt also supports "middleware", in that you can pass in an array of async functions 
-to be called before an action. Middleware functions should return true if they succeed, 
-but should throw a useful value that you can use to send an error response to the client.
+to be called before an action. Middleware functions should `throw` a useful value that you 
+can use to send an error response to the client, if it fails.
 
 ```javascript
 async function authenticate (request) {
-    if (authenticated) {
-        return true;
-    }
-    else {
+    if (!authenticated) {
         throw 401;
     }
 }
