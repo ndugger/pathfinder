@@ -26,7 +26,14 @@ export function register (method, path, middleware, action) {
 
     // Route has middleware
     if (Array.isArray(middleware) && typeof action === 'function') {
-        return routes.push({ method, path, middleware, action });
+        return routes.push({ 
+            method, 
+            path, 
+            action: async (...args) => {
+                middleware.forEach(fn => await fn(...args));
+                return action(...args);
+            }
+        });
     }
 
     // No middleware, just register action
