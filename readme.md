@@ -1,7 +1,7 @@
 # Redshirt.js
 
-Redshirt.js is a lightweight HTTP router for vanilla Node.js -- It allows you to get
-your requests routing in no time, allowing you to focus on what really matters.
+Redshirt.js is a lightweight, agnostic router, built with vanilla Node.js in mind, 
+but can be used in the browser as well, since it has no external dependencies.
 
 ## Prerequisites
 
@@ -63,6 +63,39 @@ http.createServer((request, response) => {
         response.end(result);
     }
 }).listen(3000);
+```
+
+### Middleware
+Redshirt also supports "middleware", in that you can pass in an array of async functions 
+to be called before an action. Middleware functions should return true if they succeed, 
+but should throw a useful value that you can use to send an error response to the client.
+
+```javascript
+async function authenticate (request) {
+    if (authenticated) {
+        return true;
+    }
+    else {
+        throw 401;
+    }
+}
+
+router.del('/{ foo }', [ authenticate ], async request => {
+    // if any middleware throws, this action will not be run
+});
+
+// ...
+
+if (route) try {
+    const { action } = route;
+    const result = await action(request);
+
+    response.end(result);
+}
+catch (statusCode) {
+    response.statusCode = statusCode;
+    response.end(http.STATUS_CODES[ statusCode ]);
+}
 ```
 
 ### Available API
