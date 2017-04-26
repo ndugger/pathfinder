@@ -4,6 +4,10 @@ const routes = [];
 // The pattern for matching params in paths -- { x }
 const paramsPattern = /\{(.*)\}/;
 
+function exists (method, path) {
+    return false; // TODO
+}
+
 // Supported HTTP methods
 export const DELETE = 'DELETE';
 export const GET = 'GET';
@@ -11,21 +15,23 @@ export const POST = 'POST';
 export const PUT = 'PUT';
 
 // Register a route
-export function register (method, path, action) {
-    try {
-        // Optional trailing slash and remove spaces
-        path = (path.replace(/\/$/, '') || '/').replace(/\s/g, '');
+export function register (method, path, middleware, action) {
+    // Optional trailing slash and remove spaces
+    path = (path.replace(/\/$/, '') || '/').replace(/\s/g, '');
 
-        // Route already exists
-        if (false /* TODO: match route with possible vars against requested url */) {
-            throw new Error(`Route already exists for ${ method }: ${ path }`);
-        }
-
-        // Register the route
-        routes.push({ method, path, action });
+    // Route already exists
+    if (exists(method, path)) {
+        throw new Error(`Route already exists for ${ method }: ${ path }`);
     }
-    catch (e) {
-        console.error(e);
+
+    // Route has middleware
+    if (Array.isArray(middleware) && typeof action === 'function') {
+        return routes.push({ method, path, middleware, action });
+    }
+
+    // No middleware, just register action
+    if (!action && typeof middleware === 'function') {
+        return routes.push({ method, path, action: middleware });
     }
 }
 
@@ -42,12 +48,11 @@ export function group (parent) {
         get (path, action) { get(parent + path, action); return this },
         post (path, action) { post(parent + path, action); return this },
         put (path, action) { put(parent + path, action); return this },
-
         group(path) { return group(parent + path) }
     }
 }
 
-// Find a route based on the request method & the url
+// Find a route based on the request method & the path
 export function find (method, path) {
     try {
         // Optional trailing slash
@@ -79,7 +84,7 @@ export function find (method, path) {
                     return true;
                 }
 
-                // Reset params, wrong route TODO: smelly...
+                // Reset params, wrong route
                 Object.keys(params).forEach(key => delete params[key]);
                 return false;
             }));
@@ -92,7 +97,6 @@ export function find (method, path) {
         return { params, ...complexRoute };
     }
     catch (e) {
-        console.error(e);
         return null;
     }
 }
