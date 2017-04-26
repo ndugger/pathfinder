@@ -21,7 +21,7 @@ export function register (method, path, middleware, action) {
 
     // Route already exists
     if (exists(method, path)) {
-        throw new Error(`Route already exists for ${ method }: ${ path }`);
+        throw new Error(`Route already exists for ${ method } ${ path }`);
     }
 
     // Route has middleware
@@ -29,9 +29,8 @@ export function register (method, path, middleware, action) {
         return routes.push({ 
             method, 
             path, 
-            action: async (...args) => {
-                middleware.forEach(fn => await fn(...args));
-                return action(...args);
+            action: (...args) => {
+                return Promise.all(middleware.map(fn => fn(...args))).then(() => action(...args));
             }
         });
     }
