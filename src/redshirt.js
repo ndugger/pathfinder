@@ -9,13 +9,13 @@ function exists (method, path) {
 }
 
 // Supported HTTP methods
-export const DELETE = 'DELETE';
-export const GET = 'GET';
-export const POST = 'POST';
-export const PUT = 'PUT';
+const DELETE = 'DELETE';
+const GET = 'GET';
+const POST = 'POST';
+const PUT = 'PUT';
 
 // Register a route
-export function register (method, path, middleware, action) {
+function register (method, path, middleware, action) {
     // Optional trailing slash and remove spaces
     path = (path.replace(/\/$/, '') || '/').replace(/\s/g, '');
 
@@ -42,13 +42,13 @@ export function register (method, path, middleware, action) {
 }
 
 // Shorthand HTTP method wrappers
-export const del = register.bind(undefined, DELETE);
-export const get = register.bind(undefined, GET);
-export const post = register.bind(undefined, POST);
-export const put = register.bind(undefined, PUT);
+const del = register.bind(undefined, DELETE);
+const get = register.bind(undefined, GET);
+const post = register.bind(undefined, POST);
+const put = register.bind(undefined, PUT);
 
 // Shorthand for grouping routes under a parent path
-export function group (parent) {
+function group (parent) {
     return {
         del (path, action) { del(parent + path, action); return this },
         get (path, action) { get(parent + path, action); return this },
@@ -59,7 +59,7 @@ export function group (parent) {
 }
 
 // Find a route based on the request method & the path
-export function find (method, path) {
+function find (method, path) {
     try {
         // Optional trailing slash
         path = path.replace(/\/$/, '') || '/';
@@ -106,3 +106,22 @@ export function find (method, path) {
         return null;
     }
 }
+
+export default Object.freeze({
+    
+    DELETE,
+    GET,
+    POST,
+    PUT,
+    
+    register,
+    
+    del,
+    get,
+    post,
+    put,
+    
+    group,
+    
+    find
+});
