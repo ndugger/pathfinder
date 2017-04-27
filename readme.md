@@ -3,12 +3,6 @@
 Redshirt.js is a lightweight, agnostic router, built with vanilla Node.js in mind, 
 but can be used in the browser as well, since it has no external dependencies.
 
-## Prerequisites
-
-- Node.js
-- NPM
-- Gulp
-
 ## Installation
 
 ```
@@ -20,7 +14,7 @@ npm install redshirt --save
 Simply import it at the top of a file, and go to town!
 
 ```javascript
-import * as router from 'redshirt';
+import router from 'redshirt';
 ```
 
 ### Basic Usage Example
@@ -32,13 +26,15 @@ Currently, redshirt supports the following HTTP methods:
 - POST
 - PUT
 
+(It's dead simple to support others, so feel free to submit a PR)
+
 Here's an example to give you an idea on how to use it with an http server.
 
 ```javascript
 import http from 'http';
 import url from 'url';
 
-import * as router from 'redshirt';
+import router from 'redshirt';
 
 router.get('/', async request => {
     return 'Hello, World!';
@@ -138,6 +134,6 @@ router.group('/foo')
       .post('/baz', async req => { ... });
 ```
 
-Groups allow you to specify routes that live under a path, so if I wanted to group paths under '/foo', and I add a get '/bar' to that group, you can access that get via '/foo/bar'.
+Groups allow you to specify routes that live under a path, so if I wanted to group paths under `'/foo'`, and I add a get `'/bar'` to that group, you can access it get via `'/foo/bar'`.
 
 When dealing with groups, you can chain `get`, `post`, `put`, `del`, and even child `group`ings.
