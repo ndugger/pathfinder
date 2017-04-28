@@ -40,8 +40,7 @@ router.get('/', async request => {
     return 'Hello, World!';
 });
 
-router.get('/{ foo }', async request => {
-    const { foo } = request.params;
+router.get('/{ foo }', async (request, { foo }) => {
     return `Hello, ${ foo }!`;
 });
 
@@ -53,8 +52,8 @@ http.createServer((request, response) => {
     // if a post/put, listen on 'data' event on request to extract body
 
     if (route) {
-        const { action } = route;
-        const result = await action(request);
+        const { action, params } = route;
+        const result = await action(request, params);
 
         response.end(result);
     }
@@ -73,15 +72,15 @@ async function authenticate (request) {
     }
 }
 
-router.del('/{ foo }', [ authenticate ], async request => {
+router.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
     // if any middleware throws, this action will not be run
 });
 
 // ...
 
 if (route) try {
-    const { action } = route;
-    const result = await action(request);
+    const { action, params } = route;
+    const result = await action(request, params);
 
     response.end(result);
 }
@@ -95,33 +94,35 @@ catch (statusCode) {
 
 - `register(httpMethod, requestedPath, asyncCallback)`
 ```javascript
-router.register(router.GET, '/', async req => { ... })
+router.register(router.GET, '/', async request => {
+    // ...
+})
 ```
 
 - `get(requestedPath, asyncCallback)`
 ```javascript
-router.get('/', async req => {
+router.get('/', async request => {
     // ...
 });
 ```
 
 - `post(requestedPath, asyncCallback)`
 ```javascript
-router.post('/', async req => {
-    const { body } = req;
+router.post('/', async request => {
+    // ...
 });
 ```
 
 - `put(requestedPath, asyncCallback)`
 ```javascript
-router.put('/', async req => {
-    const { body } = req;
+router.put('/', async request => {
+    // ...
 });
 ```
 
 - `del(requestedPath, asyncCallback)`
 ```javascript
-router.del('/', async req => {
+router.del('/', async request => {
     // ...
 });
 ```
@@ -129,9 +130,9 @@ router.del('/', async req => {
 - `group(groupPath)`
 ```javascript
 router.group('/foo')
-      .get('/', async req => { ... })
-      .get('/bar', async req => { ... })
-      .post('/baz', async req => { ... });
+      .get('/', async request => { ... })
+      .get('/bar', async request => { ... })
+      .post('/baz', async request => { ... });
 ```
 
 Groups allow you to specify routes that live under a path, so if I wanted to group paths under `'/foo'`, and I add a get `'/bar'` to that group, you can access it get via `'/foo/bar'`.
