@@ -1,10 +1,4 @@
 {
     "comments": false,
-    "presets": ["es2015", "stage-0"],
-    "plugins": [
-        ["transform-async-to-module-method", {
-            "module": "bluebird",
-            "method": "coroutine"
-        }]
-    ]
+    "presets": [ "es2015", "stage-0" ]
 }
