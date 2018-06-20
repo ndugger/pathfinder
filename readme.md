@@ -14,12 +14,12 @@ npm install cyclonic-games/juncture --save
 Simply import it at the top of a file, and go to town!
 
 ```javascript
-import juncture from 'juncture';
+import Router from 'juncture/Router';
 ```
 
 ### Basic Usage Example
 
-Currently, redshirt supports the following HTTP methods:
+Currently, juncture supports the following HTTP methods:
 
 - DELETE
 - GET
@@ -34,20 +34,22 @@ Here's an example to give you an idea on how to use it with an http server.
 import http from 'http';
 import url from 'url';
 
-import juncture from 'juncture';
+import Router from 'juncture/Router';
 
-juncture.get('/', async request => {
+const router = new Router();
+
+router.get('/', async request => {
     return 'Hello, World!';
 });
 
-juncture.get('/{ foo }', async (request, { foo }) => {
+router.get('/{ foo }', async (request, { foo }) => {
     return `Hello, ${ foo }!`;
 });
 
 http.createServer((request, response) => {
     const { method } = request;
     const path = url.parse(request.url).pathname;
-    const route = juncture.find(method, path);
+    const route = router.find(method, path);
 
     // if a post/put, listen on 'data' event on request to extract body
 
@@ -72,7 +74,7 @@ async function authenticate (request) {
     }
 }
 
-juncture.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
+router.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
     // if any middleware throws, this action will not be run
 });
 
@@ -99,6 +101,13 @@ juncture.register(router.GET, '/', async request => {
 })
 ```
 
+- `delete(requestedPath, asyncCallback)`
+```javascript
+juncture.del('/', async request => {
+    // ...
+});
+```
+
 - `get(requestedPath, asyncCallback)`
 ```javascript
 juncture.get('/', async request => {
@@ -118,21 +127,6 @@ juncture.post('/', async request => {
 juncture.put('/', async request => {
     // ...
 });
-```
-
-- `del(requestedPath, asyncCallback)`
-```javascript
-juncture.del('/', async request => {
-    // ...
-});
-```
-
-- `group(groupPath)`
-```javascript
-juncture.group('/foo')
-      .get('/', async request => { ... })
-      .get('/bar', async request => { ... })
-      .post('/baz', async request => { ... });
 ```
 
 Groups allow you to specify routes that live under a path, so if I wanted to group paths under `'/foo'`, and I add a get `'/bar'` to that group, you can access it get via `'/foo/bar'`.
