@@ -103,7 +103,7 @@ juncture.register(router.GET, '/', async request => {
 
 - `delete(requestedPath, asyncCallback)`
 ```javascript
-juncture.del('/', async request => {
+juncture.delete('/', async request => {
     // ...
 });
 ```
@@ -131,4 +131,4 @@ juncture.put('/', async request => {
 
 Groups allow you to specify routes that live under a path, so if I wanted to group paths under `'/foo'`, and I add a get `'/bar'` to that group, you can access it get via `'/foo/bar'`.
 
-When dealing with groups, you can chain `get`, `post`, `put`, `del`, and even child `group`ings.
+When dealing with groups, you can chain `delete`, `get`, `post`, `put`, and even child `group`ings.
