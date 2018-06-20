@@ -1,12 +1,12 @@
-# Redshirt.js
+# juncture
 
-Redshirt.js is a lightweight, agnostic router, built with vanilla Node.js in mind, 
+juncture is a lightweight, agnostic router, built with node.js in mind, 
 but can be used in the browser as well, since it has no external dependencies.
 
 ## Installation
 
 ```
-npm install redshirt --save
+npm install cyclonic-games/juncture --save
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ npm install redshirt --save
 Simply import it at the top of a file, and go to town!
 
 ```javascript
-import router from 'redshirt';
+import juncture from 'juncture';
 ```
 
 ### Basic Usage Example
@@ -34,20 +34,20 @@ Here's an example to give you an idea on how to use it with an http server.
 import http from 'http';
 import url from 'url';
 
-import router from 'redshirt';
+import juncture from 'juncture';
 
-router.get('/', async request => {
+juncture.get('/', async request => {
     return 'Hello, World!';
 });
 
-router.get('/{ foo }', async (request, { foo }) => {
+juncture.get('/{ foo }', async (request, { foo }) => {
     return `Hello, ${ foo }!`;
 });
 
 http.createServer((request, response) => {
     const { method } = request;
     const path = url.parse(request.url).pathname;
-    const route = router.find(method, path);
+    const route = juncture.find(method, path);
 
     // if a post/put, listen on 'data' event on request to extract body
 
@@ -61,7 +61,7 @@ http.createServer((request, response) => {
 ```
 
 ### Middleware
-Redshirt also supports "middleware", in that you can pass in an array of async functions 
+juncture also supports "middleware", in that you can pass in an array of async functions 
 to be called before an action. Middleware functions should `throw` a useful value that you 
 can use to send an error response to the client, if it fails.
 
@@ -72,7 +72,7 @@ async function authenticate (request) {
     }
 }
 
-router.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
+juncture.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
     // if any middleware throws, this action will not be run
 });
 
@@ -94,42 +94,42 @@ catch (statusCode) {
 
 - `register(httpMethod, requestedPath, asyncCallback)`
 ```javascript
-router.register(router.GET, '/', async request => {
+juncture.register(router.GET, '/', async request => {
     // ...
 })
 ```
 
 - `get(requestedPath, asyncCallback)`
 ```javascript
-router.get('/', async request => {
+juncture.get('/', async request => {
     // ...
 });
 ```
 
 - `post(requestedPath, asyncCallback)`
 ```javascript
-router.post('/', async request => {
+juncture.post('/', async request => {
     // ...
 });
 ```
 
 - `put(requestedPath, asyncCallback)`
 ```javascript
-router.put('/', async request => {
+juncture.put('/', async request => {
     // ...
 });
 ```
 
 - `del(requestedPath, asyncCallback)`
 ```javascript
-router.del('/', async request => {
+juncture.del('/', async request => {
     // ...
 });
 ```
 
 - `group(groupPath)`
 ```javascript
-router.group('/foo')
+juncture.group('/foo')
       .get('/', async request => { ... })
       .get('/bar', async request => { ... })
       .post('/baz', async request => { ... });
