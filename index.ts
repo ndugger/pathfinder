@@ -1,6 +1,6 @@
 import * as http from 'http';
 
-type Action<ReturnType = unknown> = (request: http.ClientRequest, params?: any, response?: http.ServerResponse) => ReturnType;
+type Action<ReturnType = unknown> = (request: http.IncomingMessage, params?: any, response?: http.ServerResponse) => ReturnType;
 type Middleware = Action<Promise<any>>[] | Action;
 
 enum Method {
