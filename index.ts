@@ -22,6 +22,7 @@ interface Route {
 
 export default class Pathfinder {
 
+    public static Method = Method;
     public static pattern: RegExp = /\{(.*)\}/;
 
     private routes: Set<Route>;
