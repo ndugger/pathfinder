@@ -1,12 +1,12 @@
-# juncture
+# pathfinder
 
-juncture is a lightweight, agnostic router, built with node.js in mind, 
+pathfinder is a lightweight, agnostic router, built with node.js in mind, 
 but can be used in the browser as well, since it has no external dependencies.
 
 ## Installation
 
 ```
-npm install cyclonic-games/juncture --save
+npm install ndugger/pathfinder --save
 ```
 
 ## Usage
@@ -14,12 +14,12 @@ npm install cyclonic-games/juncture --save
 Simply import it at the top of a file, and go to town!
 
 ```javascript
-import Router from 'juncture/Router';
+import Router from 'pathfinder/Router';
 ```
 
 ### Basic Usage Example
 
-Currently, juncture supports the following HTTP methods:
+Currently, pathfinder supports the following HTTP methods:
 
 - DELETE
 - GET
@@ -34,7 +34,7 @@ Here's an example to give you an idea on how to use it with an http server.
 import http from 'http';
 import url from 'url';
 
-import Router from 'juncture/Router';
+import Router from 'pathfinder/Router';
 
 const router = new Router();
 
@@ -63,7 +63,7 @@ http.createServer((request, response) => {
 ```
 
 ### Middleware
-juncture also supports "middleware", in that you can pass in an array of async functions 
+pathfinder also supports "middleware", in that you can pass in an array of async functions 
 to be called before an action. Middleware functions should `throw` a useful value that you 
 can use to send an error response to the client, if it fails.
 
@@ -96,35 +96,35 @@ catch (statusCode) {
 
 - `register(httpMethod, requestedPath, asyncCallback)`
 ```javascript
-juncture.register(router.GET, '/', async request => {
+pathfinder.register(router.GET, '/', async request => {
     // ...
 })
 ```
 
 - `delete(requestedPath, asyncCallback)`
 ```javascript
-juncture.delete('/', async request => {
+pathfinder.delete('/', async request => {
     // ...
 });
 ```
 
 - `get(requestedPath, asyncCallback)`
 ```javascript
-juncture.get('/', async request => {
+pathfinder.get('/', async request => {
     // ...
 });
 ```
 
 - `post(requestedPath, asyncCallback)`
 ```javascript
-juncture.post('/', async request => {
+pathfinder.post('/', async request => {
     // ...
 });
 ```
 
 - `put(requestedPath, asyncCallback)`
 ```javascript
-juncture.put('/', async request => {
+pathfinder.put('/', async request => {
     // ...
 });
 ```
