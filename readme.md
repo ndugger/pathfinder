@@ -1,4 +1,4 @@
-# pathfinder
+# Pathfinder
 
 pathfinder is a lightweight, HTTP-based router, built with node.js in mind, 
 but can be used in the browser as well, since it has no external dependencies.
@@ -37,10 +37,9 @@ router.get('/{ foo }', async (request, { foo }) => {
     return `Hello, ${ foo }!`;
 });
 
-http.createServer((request, response) => {
-    const { method } = request;
+http.createServer(async (request, response) => {
     const path = url.parse(request.url).pathname;
-    const route = router.find(method, path);
+    const route = router.find(request.method, path);
     
     if (route) {
         response.end(await route.resolve(request, route.params));
