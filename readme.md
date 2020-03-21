@@ -1,6 +1,6 @@
 # pathfinder
 
-pathfinder is a lightweight, agnostic router, built with node.js in mind, 
+pathfinder is a lightweight, HTTP-based router, built with node.js in mind, 
 but can be used in the browser as well, since it has no external dependencies.
 
 ## Installation
@@ -13,30 +13,21 @@ npm install ndugger/pathfinder --save
 
 Simply import it at the top of a file, and go to town!
 
-```javascript
-import Router from 'pathfinder/Router';
+```typescript
+import * as Pathfinder from 'pathfinder';
 ```
 
 ### Basic Usage Example
 
-Currently, pathfinder supports the following HTTP methods:
+Here's an example to give you an idea on how to use it with a node http server.
 
-- DELETE
-- GET
-- POST
-- PUT
-
-(It's dead simple to support others, so feel free to submit a PR)
-
-Here's an example to give you an idea on how to use it with an http server.
-
-```javascript
+```typescript
 import http from 'http';
 import url from 'url';
 
-import Router from 'pathfinder/Router';
+import * as Pathfinder from 'pathfinder';
 
-const router = new Router();
+const router = new Pathfinder.Router();
 
 router.get('/', async request => {
     return 'Hello, World!';
@@ -50,85 +41,98 @@ http.createServer((request, response) => {
     const { method } = request;
     const path = url.parse(request.url).pathname;
     const route = router.find(method, path);
-
-    // if a post/put, listen on 'data' event on request to extract body
-
+    
     if (route) {
-        const { action, params } = route;
-        const result = await action(request, params);
-
-        response.end(result);
+        response.end(await route.resolve(request, route.params));
     }
-}).listen(3000);
+}).listen(8080);
 ```
 
 ### Middleware
 pathfinder also supports "middleware", in that you can pass in an array of async functions 
 to be called before an action. Middleware functions should `throw` a useful value that you 
-can use to send an error response to the client, if it fails.
+can use to send an error response to the client if it fails.
 
-```javascript
+```typescript
 async function authenticate (request) {
     if (!authenticated) {
-        throw 401;
+        throw new Error(401);
     }
 }
 
-router.del('/{ foo }', [ authenticate ], async (request, { foo }) => {
-    // if any middleware throws, this action will not be run
+router.delete('/{ foo }', [ authenticate ], async (request, { foo }) => {
+    // if authenticate throws, this action will not be executed
 });
+```
 
-// ...
-
+```typescript
 if (route) try {
-    const { action, params } = route;
-    const result = await action(request, params);
+    const result = await route.resolve(request, route.params);
 
     response.end(result);
 }
-catch (statusCode) {
-    response.statusCode = statusCode;
-    response.end(http.STATUS_CODES[ statusCode ]);
+catch (error) {
+    response.statusCode = error.message;
+    response.end(http.STATUS_CODES[ error.message ]);
 }
 ```
 
 ### Available API
 
-- `register(httpMethod, requestedPath, asyncCallback)`
-```javascript
-pathfinder.register(router.GET, '/', async request => {
-    // ...
-})
-```
-
-- `delete(requestedPath, asyncCallback)`
-```javascript
-pathfinder.delete('/', async request => {
+```typescript
+router.connect('/', async request => {
     // ...
 });
 ```
 
-- `get(requestedPath, asyncCallback)`
-```javascript
-pathfinder.get('/', async request => {
+```typescript
+router.delete('/', async request => {
     // ...
 });
 ```
 
-- `post(requestedPath, asyncCallback)`
-```javascript
-pathfinder.post('/', async request => {
+```typescript
+router.get('/', async request => {
     // ...
 });
 ```
 
-- `put(requestedPath, asyncCallback)`
-```javascript
-pathfinder.put('/', async request => {
+```typescript
+router.head('/', async request => {
     // ...
 });
 ```
 
-Groups allow you to specify routes that live under a path, so if I wanted to group paths under `'/foo'`, and I add a get `'/bar'` to that group, you can access it get via `'/foo/bar'`.
+```typescript
+router.options('/', async request => {
+    // ...
+});
+```
 
-When dealing with groups, you can chain `delete`, `get`, `post`, `put`, and even child `group`ings.
+```typescript
+router.patch('/', async request => {
+    // ...
+});
+```
+
+```typescript
+router.post('/', async request => {
+    // ...
+});
+```
+
+```typescript
+router.put('/', async request => {
+    // ...
+});
+```
+
+```typescript
+router.trace('/', async request => {
+    // ...
+});
+```
+
+```typescript
+router.find('GET', '/');
+```

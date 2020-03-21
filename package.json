@@ -1,9 +1,11 @@
 {
   "name": "pathfinder",
   "version": "1.0.0",
-  "description": "Lightweight, agnostic router",
-  "main": "index.ts",
-  "scripts": {},
+  "description": "Lightweight HTTP Router",
+  "main": "pkg/index.js",
+  "scripts": {
+    "build": "tsc --outDir pkg"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ndugger/pathfinder.git"
@@ -19,7 +21,7 @@
     "url": "https://github.com/ndugger/pathfinder/issues"
   },
   "homepage": "https://github.com/ndugger/pathfinder#readme",
-  "devDependencies": {
-    "@types/node": "^11.13.0",
+  "dependencies": {
+    "typescript": "^3.8.3"
   }
 }
