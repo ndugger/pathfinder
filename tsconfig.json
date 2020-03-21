@@ -2,6 +2,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "downlevelIteration": true,
+        "declaration": true,
         "lib": [
             "dom",
             "esnext"
