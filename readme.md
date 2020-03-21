@@ -54,7 +54,7 @@ to be called before an action. Middleware functions should `throw` a useful valu
 can use to send an error response to the client if it fails.
 
 ```typescript
-async function authenticate (request) {
+async function authenticate(request) {
     if (!authenticated) {
         throw new Error(401);
     }
